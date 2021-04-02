@@ -2,16 +2,16 @@ require('dotenv').config()
 const express = require("express");
 const ejs = require("ejs");
 const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
+// const mongoose = require("mongoose");
 const session = require("express-session");
 const passport = require("passport"); 
-const passportLocalMongoose = require("passport-local-mongoose");
+// const passportLocalMongoose = require("passport-local-mongoose");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const findOrCreate = require("mongoose-findorcreate");
+// const findOrCreate = require("mongoose-findorcreate");
 const http = require("http");
 const { profile } = require('console');
 const app = express();
-const uris = require("./uris");
+const uris = require("./api/uris");
 
 app.use(express.static("public"));
 app.set("view engine", "ejs");
@@ -29,46 +29,10 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-mongoose.connect(uris.MONGO_USERDB, {
-    useNewUrlParser: true, 
-    useUnifiedTopology: true,
-    useCreateIndex: true
-});
-
-const userSchema = new mongoose.Schema({
-    email: String,
-    password: String,
-    googleId: String,
-    baby: Number
-});
-
-const babySchema = new mongoose.Schema({
-    baby: Number,
-    name: String,
-    entry: {
-        date: Date,
-        details: {
-            time: {
-                hour: Number,
-                min: Number
-            },
-            feeding: {
-                left: Number,
-                right: Number,
-                bottle: Number
-            },
-            diaper: Number,
-            sleep: Boolean,
-            notes: String
-        }
-    }
-});
-
-userSchema.plugin(passportLocalMongoose);
-userSchema.plugin(findOrCreate);
+const mongoose = require("./api/mongoose");
+const userSchema = require("./api/user_schema");
 
 const User = new mongoose.model("User", userSchema);
-const Baby = new mongoose.model("Baby", babySchema);
 
 passport.use(User.createStrategy());
 passport.serializeUser(function(user, done) {
@@ -171,6 +135,7 @@ app.route("/logout")
 app.route("/secrets")
     .get((req, res) => {
         if (req.isAuthenticated()) {
+            
             res.render("secrets");
         } else {
             res.redirect("/login");
@@ -194,7 +159,7 @@ app.route("/submit")
                 console.log(err);
             } else {
                 if (foundUser) {
-                    foundUser.secrent = submittedSecret;
+                    foundUser.secret = submittedSecret;
                     foundUser.save(() => {
                         res.redirect("/secrets");
                     });
