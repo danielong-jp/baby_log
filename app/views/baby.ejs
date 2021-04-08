@@ -1,0 +1,21 @@
+<%- include('partials/header') %>
+
+<div class="jumbotron text-center">
+  <div class="container">
+    <i class="fas fa-key fa-6x"></i>
+    <h1 class="display-3"><%=baby.name%></h1>
+    <a class="btn btn-light btn-lg" href="/<%=baby.name%>/<%=today%>" role="button">New Log</a>
+    <% if (baby.entries === undefined) { %>
+        <p>No logs yet.</p>
+    <% } else {%>
+    <% baby.entries.forEach((entry) => { %>
+        <p class="secret-text" ><a href="/<%=baby.name%>/<%=entry.date%>"><%=entry.date%></a></p>
+    <% })} %>
+    
+    <hr>
+      <a class="btn btn-light btn-lg" href="/logout" role="button">Log Out</a>
+      <a class="btn btn-dark btn-lg" href="/newbaby" role="button">Add a New Baby</a>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

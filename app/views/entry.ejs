@@ -1,0 +1,67 @@
+<%- include('partials/header') %>
+
+<div class="jumbotron text-center">
+  <div class="container">
+    <i class="fas fa-key fa-6x"></i>
+    <h1 class="display-3"><%=baby.name%></h1>
+
+
+    <div>Name: <%= baby.name%></div>
+    <div>Date: <%= today%></div>
+    <form action="/<%=baby.name%>/<%=today%>" method="post">
+
+    <table>
+        <tr>
+            <th>Time</th>
+            <th colspan="3">Feed</th>
+            <th colspan="2">Diaper</th>
+            <th>Sleep</th>
+            <th>Notes</th>
+        </tr>
+        <tr>
+            <th></th>
+            <th>Left</th>
+            <th>Right</th>
+            <th>Bottle</th>
+            <th></th>
+            <th></th>
+        </tr>
+    <% if ( entry === undefined || entry.details.length === 0) { %>
+        <% for (let i = 0; i < 24; i++) { %>
+            <tr>
+                <td><input name="time_<%=i%>" type="time" value="<%=i.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})%>:00"></td>
+                <td><input type="number" name="left_<%=i%>"></td>
+                <td><input type="number" name="right_<%=i%>"></td>
+                <td><input type="number" name="bottle_<%=i%>"></td>
+                <td><input type="button" name="poop_<%=i%>" id="poop_<%=i%>" onclick="poop(<%=i%>)"></td>
+                <td><input type="button" name="pee_<%=i%>" id="pee_<%=i%>" onclick="pee(<%=i%>)"></td>
+                <td><input type="button" name="sleep_<%=i%>" id="sleep_<%=i%>" onclick="sleep(<%=i%>)"></td>
+                <td><input type="text" name="note_<%=i%>"></td>
+            </tr>
+        <% } %>
+    <% } else {%>
+        <% for (let i = 0; i < 24; i++) { %>
+            <tr>
+                <td><input name="time_<%=i%>" type="time" value="<%=entry.details[i].time%>:00"></td>
+                <td><input type="number" name="left_<%=i%>" value="<%=entry.details[i].left%>"></td>
+                <td><input type="number" name="right_<%=i%>" value="<%=entry.details[i].right%>"></td>
+                <td><input type="number" name="bottle_<%=i%>" value="<%=entry.details[i].bottle%>"></td>
+                <td><input type="button" name="poop_<%=i%>" value="<%=entry.details[i].poop%>" id="poop_<%=i%>" onclick="poop(<%=i%>)"></td>
+                <td><input type="button" name="pee_<%=i%>" value="<%=entry.details[i].pee%>" id="pee_<%=i%>" onclick="pee(<%=i%>)"></td>
+                <td><input type="button" name="sleep_<%=i%>" value="<%=entry.details[i].bottle%>" id="sleep_<%=i%>" onclick="sleep(<%=i%>)"></td>
+                <td><input type="text" name="note_<%=i%>" value="<%=entry.details[i].notes%>"></td>
+            </tr>
+        <% } %>
+    <% } %>
+    </table>
+    <button type="submit">Submit</button>
+    </form>
+    <hr>
+      <a class="btn btn-light btn-lg" href="/logout" role="button">Log Out</a>
+      <a class="btn btn-dark btn-lg" href="/newbaby" role="button">Add a New Baby</a>
+  </div>
+</div>
+
+<script src="../js/button.js"></script>
+
+<%- include('partials/footer') %>
